@@ -23,6 +23,13 @@ class gameObject {
     draw() {
         c.drawImage(crabStill, this.pos.x, this.pos.y)
     }
+    // updating object positions as they move and have to be redrawn. separate from draw() because they should still be drawn while stationary
+    move() {
+        this.draw()
+        // incrementing object position by speed
+        this.pos.x += this.speed.x
+        this.pos.y += this.speed.y
+    }
 }
 // instantiating gameObject to make the player object
 const player = new gameObject({
@@ -42,7 +49,8 @@ function swim() {
     // erasing previous animation frames by painting black over them
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
-    player.draw()
+    // draw objects on every frame
+    player.move()
 }
 swim()
 // adding a listener for player mousewheel
