@@ -83,6 +83,17 @@ class strikeArea extends gameObject {
         this.pos.x = player.pos.x - player.pos.x/3
     }
 }
+// creating a class for player crosshairs
+class pointer extends gameObject {
+    constructor({pos, speed}) {
+        super({pos, speed}, 'crosshairs')
+    }
+    draw() {
+        c.fillStyle = 'red'
+        c.fillRect(this.pos.x + 31, this.pos.y, 2, 64)
+        c.fillRect(this.pos.x, this.pos.y + 31, 64, 2)
+    }
+}
 // instantiating gameObject to make the player object
 const player = new gameObject({
     pos: {
@@ -111,6 +122,11 @@ const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
     pos: {x: 0,y: player.pos.y - crabStill.height}, speed: {x: 0, y: 0}
 })
+// instantiating pointer to create a set of crosshairs
+const crosshairs = new pointer({
+    // setting the crosshairs inside of the striking area
+    pos: {x: player.pos.x, y: player.pos.y - crabStill.height + 64}, speed: {x: 0, y: 0}
+})
 // making a function to redraw each frame
 function swim() {
     // this calls "swim" on the next frame of animation so it's an infinite loop
@@ -122,6 +138,7 @@ function swim() {
     strikeSquare.move()
     player.move()
     salmon.move()
+    crosshairs.move()
 
 }
 swim()
