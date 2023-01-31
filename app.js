@@ -31,8 +31,29 @@ class gameObject {
         this.pos.y += this.speed.y
     }
 }
+// creating a class for salmon
+class commonFish extends gameObject {
+    constructor({pos, speed}) {
+        super({pos, speed})
+    }
+    draw() {
+        // drawing my salmon sprite instead of the crab one
+        c.drawImage(salmonStill, this.pos.x, this.pos.y)
+    }
+}
 // instantiating gameObject to make the player object
 const player = new gameObject({
+    pos: {
+        x: 256,
+        y: 256
+    },
+    speed: {
+        x: 0,
+        y: 0
+    }
+})
+// instantiating commonFish to make a salmon object
+const salmon = new commonFish({
     pos: {
         x: 256,
         y: 256
@@ -51,6 +72,7 @@ function swim() {
     c.fillRect(0, 0, canvas.width, canvas.height)
     // draw objects on every frame
     player.move()
+    salmon.move()
 }
 swim()
 // adding a listener for player mousewheel
