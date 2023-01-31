@@ -89,9 +89,12 @@ class pointer extends gameObject {
         super({pos, speed}, 'crosshairs')
     }
     draw() {
+        // drawing the crosshairs with fillStyle
         c.fillStyle = 'red'
-        c.fillRect(this.pos.x + 31, this.pos.y, 2, 64)
-        c.fillRect(this.pos.x, this.pos.y + 31, 64, 2)
+        c.fillRect(this.pos.x + 31, this.pos.y + 16, 2, 32)
+        c.fillRect(this.pos.x + 16, this.pos.y + 31, 32, 2)
+        c.fillStyle = 'red'
+        c.fillRect(this.pos.x + 29, this.pos.y + 29, 6, 6)
         // if the center of the crosshairs touch the left of the target zone
         if (crosshairs.pos.x + 32 < strikeSquare.pos.x) {
             // let the crosshairs be dragged on the target zone
