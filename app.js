@@ -14,18 +14,44 @@ salmonStill.src = 'fishpics/salmonStill.png'
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
 class gameObject {
-    // position and speed are given as an object for legibility during instantiation. I think I'll use the species argument to determine what is drawn over the object. if not I'll extend this class
-    constructor({pos, speed}) {
+    // position and speed are given as an object for legibility during instantiation. the species argument is used to determine which image is drawn
+    constructor({pos, speed}, species) {
         this.pos = pos
         this.speed = speed
+        this.species = species
     }
     // drawing the sprite or shapes at the object's position
     draw() {
         c.drawImage(crabStill, this.pos.x, this.pos.y)
     }
     // updating object positions as they move and have to be redrawn. separate from draw() because they should still be drawn while stationary
+    // making fish wrap back into the screen if they leave
+    wrap() {
+        // if objects exit on the right side
+        if (this.pos.x > canvas.width) {
+            // load the sprite in left minus its pixel width for a smooth transition
+            if (this.species == 'crab') {
+                this.pos.x = -crabStill.width
+            }
+            if (this.species == 'salmon') {
+                this.pos.x = -salmonStill.width
+            }
+        }
+        // and for the left side
+        if (this.species == 'crab') {
+            if (this.pos.x < -crabStill.width) {
+                this.pos.x = canvas.width
+            }
+        }
+        if (this.species == 'salmon') {
+            if (this.pos.x < -salmonStill.width) {
+                this.pos.x = canvas.width
+            }
+        }
+    }
     move() {
         this.draw()
+        this.wrap()
         // incrementing object position by speed
         this.pos.x += this.speed.x
         this.pos.y += this.speed.y
@@ -34,7 +60,8 @@ class gameObject {
 // creating a class for salmon
 class commonFish extends gameObject {
     constructor({pos, speed}) {
-        super({pos, speed})
+        // 'salmon' species 
+        super({pos, speed}, 'salmon');
     }
     draw() {
         // drawing my salmon sprite instead of the crab one
@@ -51,7 +78,7 @@ const player = new gameObject({
         x: 0,
         y: 0
     }
-})
+}, 'crab')
 // instantiating commonFish to make a salmon object
 const salmon = new commonFish({
     pos: {
@@ -59,7 +86,7 @@ const salmon = new commonFish({
         y: 256
     },
     speed: {
-        x: 0,
+        x: 10,
         y: 0
     }
 })
