@@ -18,7 +18,6 @@ class gameObject {
     constructor({pos, speed}) {
         this.pos = pos
         this.speed = speed
-        this.species = species
     }
     // drawing the sprite or shapes at the object's position
     draw() {
@@ -35,7 +34,7 @@ const player = new gameObject({
         x: 0,
         y: 0
     }
-}, crab)
+})
 // making a function to redraw each frame
 function swim() {
     // this calls "swim" on the next frame of animation so it's an infinite loop
@@ -43,5 +42,6 @@ function swim() {
     // erasing previous animation frames by painting black over them
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
-    player.update()
+    player.draw()
 }
+swim()
