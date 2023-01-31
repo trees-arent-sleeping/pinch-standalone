@@ -83,7 +83,7 @@ class strikeArea extends gameObject {
         this.pos.x = player.pos.x - player.pos.x/3
     }
 }
-// creating a class for player crosshairs
+// creating a class for player crosshairss
 class pointer extends gameObject {
     constructor({pos, speed}) {
         super({pos, speed}, 'crosshairs')
@@ -92,6 +92,23 @@ class pointer extends gameObject {
         c.fillStyle = 'red'
         c.fillRect(this.pos.x + 31, this.pos.y, 2, 64)
         c.fillRect(this.pos.x, this.pos.y + 31, 64, 2)
+        // if the center of the crosshairs touch the left of the target zone
+        if (crosshairs.pos.x + 32 < strikeSquare.pos.x) {
+            // let the crosshairs be dragged on the target zone
+            this.pos.x = strikeSquare.pos.x - 32
+            }
+        // same for the right
+        if (crosshairs.pos.x + 32 > strikeSquare.pos.x + 384) {
+            this.pos.x = strikeSquare.pos.x + 384 - 32
+        }
+        // for the top
+        if (crosshairs.pos.y + 32 < strikeSquare.pos.y) {
+            crosshairs.pos.y = strikeSquare.pos.y - 32
+        }
+        // for the bottom
+        if (crosshairs.pos.y + 32 > strikeSquare.pos.y + 192) {
+            crosshairs.pos.y = strikeSquare.pos.y + 192 - 32
+        }
     }
 }
 // instantiating gameObject to make the player object
@@ -122,9 +139,9 @@ const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
     pos: {x: 0,y: player.pos.y - crabStill.height}, speed: {x: 0, y: 0}
 })
-// instantiating pointer to create a set of crosshairs
+// instantiating pointer to create a set of crosshairss
 const crosshairs = new pointer({
-    // setting the crosshairs inside of the striking area
+    // setting the crosshairss inside of the striking area
     pos: {x: player.pos.x, y: player.pos.y - crabStill.height + 64}, speed: {x: 0, y: 0}
 })
 // making a function to redraw each frame
@@ -159,3 +176,39 @@ document.addEventListener('wheel', (event)=> {
         player.speed.x = Math.abs(scroll) * 0.05
     }
 });
+// adding WASD controls for crosshairs
+document.addEventListener("keypress", function(event) {
+            if (event.key === "w") {
+                crosshairs.speed.y = -4
+            }
+            if (event.key === "a")
+            {
+                crosshairs.speed.x = -4
+            }
+            if (event.key === "s") {
+                crosshairs.speed.y = 4
+            }
+            if
+            (event.key === "d") {
+                crosshairs.speed.x = 4
+            }
+});
+// 
+
+  document.addEventListener("keyup",function(event) {
+    if (event.key === "w") {
+        crosshairs.speed.y = 0;
+    }
+    if (event.key === "a")
+    {
+        crosshairs.speed.x = 0
+    } 
+    if
+    (event.key === "s") {
+        crosshairs.speed.y = 0
+    }
+    if
+    (event.key === "d") {
+        crosshairs.speed.x = 0
+    }
+  }) 
