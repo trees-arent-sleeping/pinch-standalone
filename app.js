@@ -196,8 +196,7 @@ document.addEventListener("keypress", function(event) {
                 crosshairs.speed.x = 4
             }
 });
-// 
-
+// adding key release WASD listeners
   document.addEventListener("keyup",function(event) {
     if (event.key === "w") {
         crosshairs.speed.y = 0;
@@ -215,3 +214,9 @@ document.addEventListener("keypress", function(event) {
         crosshairs.speed.x = 0
     }
   }) 
+// adding a listener for the player's click
+document.addEventListener("click", ()=> {
+    // check that the crosshairs are in within the salmon
+    if (crosshairs.pos.x + 32 >= salmon.pos.x && crosshairs.pos.x + 32 <= salmon.pos.x + salmonStill.width && crosshairs.pos.y + 32 >= salmon.pos.y && crosshairs.pos.y + 32 < salmon.pos.y + salmonStill.height) {
+        alert('hit!')}
+  })
