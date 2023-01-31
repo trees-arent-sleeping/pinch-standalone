@@ -7,9 +7,9 @@ canvas.width = 1024
 canvas.height = 576
 // loading crab and salmon images
 let crabStill = new Image()
-crabStill.src = "fishpics/crabStill.png"
+crabStill.src = 'fishpics/crabStill.png'
 let salmonStill = new Image()
-salmonStill.src = "fishpics/salmonStill.png"
+salmonStill.src = 'fishpics/salmonStill.png'
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
@@ -45,3 +45,20 @@ function swim() {
     player.draw()
 }
 swim()
+// adding a listener for player mousewheel
+document.addEventListener('wheel', (event)=> {
+    // tracking the change in Y of the scroll event. scrolling down gives negative changes in px and up gives positive. 
+    let scroll = event.deltaY
+    console.log(scroll)
+
+    // if player is rolling the mousewheel up:
+    if (scroll > 0) {
+        // scrolling more means more pixels moved. it's negative in one direction, so I'm taking the absolute value of pixels scrolled (ie -40px or +90px) to make the player's speed somewhat proportionate to the mousewheel movement. multiplying by 0.05 gives just a little movement
+        player.speed.x = Math.abs(scroll) * -0.05
+    }
+    // if player is rolling the mousehweel down:
+    else if (scroll < 0) {
+        // same thing but with a positive * 0.05
+        player.speed.x = Math.abs(scroll) * 0.05
+    }
+});
