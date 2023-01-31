@@ -36,3 +36,12 @@ const player = new gameObject({
         y: 0
     }
 }, crab)
+// making a function to redraw each frame
+function swim() {
+    // this calls "swim" on the next frame of animation so it's an infinite loop
+    window.requestAnimationFrame(swim) 
+    // erasing previous animation frames by painting black over them
+    c.fillStyle = 'black'
+    c.fillRect(0, 0, canvas.width, canvas.height)
+    player.update()
+}
