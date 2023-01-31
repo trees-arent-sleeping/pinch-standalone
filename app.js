@@ -68,11 +68,27 @@ class commonFish extends gameObject {
         c.drawImage(salmonStill, this.pos.x, this.pos.y)
     }
 }
+// creating a class for a target zone
+class strikeArea extends gameObject {
+    constructor({pos, speed}) {
+        super({pos, speed}, 'strikeSquare')
+    }
+    draw() {
+        // keeping in mind that a salmon is 384px by 192px, drawing a target area
+        c.fillStyle = 'blue'
+        c.fillRect(this.pos.x, this.pos.y, 384, 192)
+        c.fillStyle = 'black'
+        c.fillRect(this.pos.x + 2, this.pos.y + 2, 380, 188)
+        // loosely centering the target zone above the player
+        this.pos.x = player.pos.x - player.pos.x/3
+    }
+}
 // instantiating gameObject to make the player object
 const player = new gameObject({
     pos: {
         x: 256,
-        y: 256
+        // placing the crab on the bottom of the screen
+        y: canvas.height - crabStill.height
     },
     speed: {
         x: 0,
@@ -83,12 +99,17 @@ const player = new gameObject({
 const salmon = new commonFish({
     pos: {
         x: 256,
-        y: 256
+        y: player.pos.y - crabStill.height
     },
     speed: {
         x: 10,
         y: 0
     }
+})
+// instantiating strikeArea to make a target area object
+const strikeSquare = new strikeArea({
+    // x-position and speed don't matter because this object is attached to the player
+    pos: {x: 0,y: player.pos.y - crabStill.height}, speed: {x: 0, y: 0}
 })
 // making a function to redraw each frame
 function swim() {
@@ -98,8 +119,10 @@ function swim() {
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     // draw objects on every frame
+    strikeSquare.move()
     player.move()
     salmon.move()
+
 }
 swim()
 // adding a listener for player mousewheel
