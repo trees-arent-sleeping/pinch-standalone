@@ -71,7 +71,7 @@ class commonFish extends gameObject {
     }
 }
 // creating a class for smaller fish
-class uglyFish extends commonFish {
+class uglyFish extends gameObject {
     constructor({pos, speed}) {
         // 'carp' species
         super({pos, speed}, 'carp')
@@ -150,6 +150,21 @@ const salmon = new commonFish({
         y: 0
     }
 })
+const carpContainer = []
+// creating 5 carp
+for (let i = 0; i < 5; i++) {
+    carpContainer.push(new uglyFish({
+        pos: {
+            x: i * 100,
+            y: i * 100
+        },
+        speed: {
+            x: 5,
+            y: 0
+        }
+    }))
+}
+
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
@@ -171,6 +186,9 @@ function swim() {
     // draw objects on every frame
     strikeSquare.move()
     salmon.move()
+    for (let i = 0; i < carpContainer.length; i++) {
+        carpContainer[i].move()
+    }
     crosshairs.move()
     player.move()
 }
