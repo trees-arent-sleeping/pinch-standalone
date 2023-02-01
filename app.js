@@ -53,9 +53,20 @@ class commonFish extends gameObject {
         super({pos, speed});
         this.image = salmonStill
     }
+    // modifying wrap() to make fish move vertically towards the player. t
+    wrap() {
+        if (this.pos.x > canvas.width) {
+                this.pos.x = -this.image.width
+                // moving the fish down towards the player by their image height when they are offscreen
+                this.pos.y += this.image.height
+        }
+         if (this.pos.x < -this.image.width) {
+                this.pos.x = canvas.width
+            }
+    }
 }
 // creating a class for smaller fish
-class uglyFish extends gameObject {
+class uglyFish extends commonFish {
     constructor({pos, speed}) {
         super({pos, speed})
         this.image = carpStill
@@ -128,7 +139,7 @@ fishContainer.push(salmon = new commonFish({
         y: player.pos.y - crabStill.height
     },
     speed: {
-        x: 10,
+        x: 3,
         y: 0
     }
 }))
@@ -141,7 +152,7 @@ function carpCall(quantity) {
                 y: i * 80
             },
             speed: {
-                x: Math.random()*5 + 1,
+                x: Math.random()*5 + 5,
                 y: 0
             }
         }))
@@ -168,7 +179,6 @@ function swim() {
     c.fillRect(0, 0, canvas.width, canvas.height)
     // draw objects on every frame
     strikeSquare.move()
-    salmon.move()
     for (let i = 0; i < fishContainer.length; i++) {
         fishContainer[i].move()
     }
@@ -227,7 +237,7 @@ document.addEventListener("keypress", function(event) {
     (event.key === "d") {
         crosshairs.speed.x = 0
     }
-  }) 
+}) 
 let h1 = document.getElementsByTagName('h1')
 let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
@@ -235,7 +245,8 @@ document.addEventListener("click", ()=> {
     for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
-    counter += 1
-    h1[0].innerHTML = `Fish: ${counter}`}
+        fishContainer.splice(i, 1)
+        counter += 1
+        h1[0].innerHTML = `Fish: ${counter}`}
     }
-  })
+})
