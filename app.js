@@ -21,6 +21,7 @@ class gameObject {
         this.pos = pos
         this.speed = speed
         this.image = crabStill
+        this.hp = 5
     }
     // drawing the sprite or shapes at the object's position
     draw() {
@@ -52,6 +53,7 @@ class commonFish extends gameObject {
     constructor({pos, speed}) {
         super({pos, speed});
         this.image = salmonStill
+        this.biting = false
     }
     // modifying wrap() to make fish move vertically towards the player. t
     wrap() {
@@ -65,9 +67,11 @@ class commonFish extends gameObject {
             }
         // if fish are biting the player. player.pos.y sets the hitbox below the crab's claws
         if (this.pos.y + this.image.height/2 > player.
-        pos.y + 128 && this.pos.x + this.image.width > player.pos.x){
-            player.pos.x = this.pos.x + 1
-        }
+        pos.y + 10 && this.pos.x + this.image.width > player.pos.x){
+        // check the fish is a salmon. only salmon can push the player
+        if (this.image == salmonStill) {player.pos.x = this.pos.x + 1}
+        this.biting = true
+    }
         }
 }
 // creating a class for smaller fish
@@ -134,20 +138,9 @@ const player = new gameObject({
         x: 0,
         y: 0
     }
-}, 'crab')
-// instantiating commonFish to make a salmon object
+})
 // setting up an array to contain all the fish
 const fishContainer = []
-fishContainer.push(salmon = new commonFish({
-    pos: {
-        x: 0,
-        y: 0
-    },
-    speed: {
-        x: 3,
-        y: 0
-    }
-}))
 // a function to create x amount of carp
 function carpCall(x) {
     for (let i = 0; i < x; i++) {
@@ -179,6 +172,8 @@ const crosshairs = new pointer({
     // setting the crosshairss inside of the striking area
     pos: {x: player.pos.x, y: player.pos.y - crabStill.height + 64}, speed: {x: 0, y: 0}
 })
+// keeping track of how many salmon are spawned
+reaperSpawned = 0
 // making a function to redraw each frame
 function swim() {
     // this calls "swim" on the next frame of animation so it's an infinite loop
@@ -193,6 +188,38 @@ function swim() {
     }
     crosshairs.move()
     player.move()
+    // update the health and remove small fish when they bite the player
+    for (let i = 0; i < fishContainer.length; i++)
+    {if (fishContainer[i].biting == true) {
+        // grabbing the health <h1> from the DOM
+        let health = document.getElementById('health')
+        // decrementing it by one heart
+        let hearts = health.innerHTML.substring(0, health.innerHTML.length - 1)
+        health.innerHTML = hearts
+        // decrementing player object hp value
+        player.hp -= 1
+        // salmon aren't deleted when they impact the player
+        if (fishContainer[i].image !== salmonStill) {
+            fishContainer.splice(i, 1)
+        }
+        // if the player's health is 0 and they get another bite, spawn a salmon
+        // spawn only one salmon
+        if (reaperSpawned < 2) {
+            if (player.hp < 1) {
+                reaperSpawned += 2
+                alert(reaperSpawned)
+                fishContainer.push(salmon = new commonFish({
+                    pos: {
+                        x: 0,
+                        y: 0
+                    },
+                    speed: {
+                        x: 2,
+                        y: 0
+                    }}))
+        }
+        }
+    }}
 }
 swim()
 // adding a listener for player mousewheel
@@ -247,7 +274,9 @@ document.addEventListener("keypress", function(event) {
         crosshairs.speed.x = 0
     }
 }) 
-let h1 = document.getElementsByTagName('h1')
+// grabbing the <h3> that holds the score from the DOM
+let score = document.getElementById('score')
+// starting with a score of 0
 let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
 document.addEventListener("click", ()=> {
@@ -256,6 +285,6 @@ document.addEventListener("click", ()=> {
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
         fishContainer.splice(i, 1)
         counter += 1
-        h1[0].innerHTML = `Fish: ${counter}`}
+        score.innerHTML = `score: ${counter}`}
     }
 })
