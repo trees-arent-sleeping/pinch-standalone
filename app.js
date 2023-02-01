@@ -38,7 +38,7 @@ class gameObject {
          if (this.pos.x < -this.image.width) {
                 this.pos.x = canvas.width
             }
-        }
+    }
     move() {
         this.draw()
         this.wrap()
@@ -56,14 +56,19 @@ class commonFish extends gameObject {
     // modifying wrap() to make fish move vertically towards the player. t
     wrap() {
         if (this.pos.x > canvas.width) {
-                this.pos.x = -this.image.width
-                // moving the fish down towards the player by their image height when they are offscreen
-                this.pos.y += this.image.height
+            this.pos.x = -this.image.width
+            // moving the fish down towards the player by their image height when they are offscreen
+            this.pos.y += this.image.height
         }
          if (this.pos.x < -this.image.width) {
                 this.pos.x = canvas.width
             }
-    }
+        // if fish are biting the player. player.pos.y sets the hitbox below the crab's claws
+        if (this.pos.y + this.image.height/2 > player.
+        pos.y + 128 && this.pos.x + this.image.width > player.pos.x){
+            player.pos.x = this.pos.x + 1
+        }
+        }
 }
 // creating a class for smaller fish
 class uglyFish extends commonFish {
@@ -79,12 +84,12 @@ class strikeArea extends gameObject {
     }
     draw() {
         // keeping in mind that a salmon is 384px by 192px, drawing a target area
-        c.fillStyle = 'blue'
-        c.fillRect(this.pos.x, this.pos.y, 384, 192)
-        c.fillStyle = 'black'
-        c.fillRect(this.pos.x + 2, this.pos.y + 2, 380, 188)
-        // loosely centering the target zone above the player
-        this.pos.x = player.pos.x - player.pos.x/3
+            c.fillStyle = 'blue'
+            c.fillRect(this.pos.x, this.pos.y, 384, 192)
+            c.fillStyle = 'black'
+            c.fillRect(this.pos.x + 2, this.pos.y + 2, 380, 188)
+            // loosely centering the target zone above the player
+            this.pos.x = player.pos.x - player.pos.x/3
     }
 }
 // creating a class for player crosshairss
