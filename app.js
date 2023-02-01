@@ -210,6 +210,17 @@ function swim() {
         if (reaperSpawned < 1) {
             if (player.hp < 1) {
                 reaperSpawned += 1
+                // make things look scary
+                setInterval(()=> {
+                    document.querySelector('canvas').style.filter = 'invert(70%)'
+                }, 100)
+                // make the game window blink inverted colors
+                setInterval(()=> {
+                    document.querySelector('canvas').style.filter = 'invert(0)'
+                }, 1000)
+                document.querySelector('ul').style.filter = 'brightness(0)'
+
+
                 fishContainer.push(salmon = new commonFish({
                     pos: {
                         x: -384,
@@ -285,8 +296,17 @@ document.addEventListener("click", ()=> {
     for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
+        // remove that fish from the array
         fishContainer.splice(i, 1)
+        // flash the game area a random color
+        document.querySelector('canvas').style.filter  = `hue-rotate(${Math.random()*360}rad)`
+        // add to the player's score
         counter += 1
+        // change the border back to red after 100ms
+        setTimeout(()=> {
+            document.querySelector('canvas').style.filter  = `hue-rotate(0deg)`
+        }, 150)
+        // update the score tag
         score.innerHTML = `score: ${counter}`}
     }
 })
