@@ -135,8 +135,8 @@ const player = new gameObject({
 const fishContainer = []
 fishContainer.push(salmon = new commonFish({
     pos: {
-        x: 256,
-        y: player.pos.y - crabStill.height
+        x: 0,
+        y: 0
     },
     speed: {
         x: 3,
@@ -144,21 +144,25 @@ fishContainer.push(salmon = new commonFish({
     }
 }))
 // a function to create x amount of carp
-function carpCall(quantity) {
-    for (let i = 0; i < quantity; i++) {
-        fishContainer.push(new uglyFish({
-            pos: {
-                x: i * 100,
-                y: i * 80
-            },
-            speed: {
-                x: Math.random()*5 + 5,
-                y: 0
-            }
-        }))
+function carpCall(x) {
+    for (let i = 0; i < x; i++) {
+        // setting a delay between each iteration so that the fish spawn slowly
+        setTimeout(()=> {
+            fishContainer.push(new uglyFish({
+                pos: {
+                    x: -128,
+                    y: 0
+                },
+                speed: {
+                    x: Math.random()*5 + 5,
+                    y: 0
+                }
+            }))
+            // multiply the delay by the current iteration so it applies to each loop
+        }, 1000 * i)
     }
 }
-carpCall(5)
+carpCall(50)
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
