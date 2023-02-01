@@ -5,11 +5,13 @@ const c = canvas.getContext('2d')
 // setting up canvas here so that I don't have to do math on or remember the dimensions
 canvas.width = 1024
 canvas.height = 576
-// loading crab and salmon images
+// loading crab and fish
 let crabStill = new Image()
 crabStill.src = 'fishpics/crabStill.png'
 let salmonStill = new Image()
 salmonStill.src = 'fishpics/salmonStill.png'
+let carpStill = new Image()
+carpStill.src = 'fishpics/uglyfish.png'
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
@@ -66,6 +68,17 @@ class commonFish extends gameObject {
     draw() {
         // drawing my salmon sprite instead of the crab one
         c.drawImage(salmonStill, this.pos.x, this.pos.y)
+    }
+}
+// creating a class for smaller fish
+class uglyFish extends commonFish {
+    constructor({pos, speed}) {
+        // 'carp' species
+        super({pos, speed}, 'carp')
+    }
+    draw() {
+        // drawing my carp sprite instead of the salmon one
+        c.drawImage(carpStill, this.pos.x, this.pos.y)
     }
 }
 // creating a class for a target zone
@@ -140,7 +153,8 @@ const salmon = new commonFish({
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
-    pos: {x: 0,y: player.pos.y - crabStill.height}, speed: {x: 0, y: 0}
+    // y: 192 places the box slightly under the player's claws
+    pos: {x: 0,y: 224}, speed: {x: 0, y: 0}
 })
 // instantiating pointer to create a set of crosshairss
 const crosshairs = new pointer({
@@ -156,10 +170,9 @@ function swim() {
     c.fillRect(0, 0, canvas.width, canvas.height)
     // draw objects on every frame
     strikeSquare.move()
-    player.move()
     salmon.move()
     crosshairs.move()
-
+    player.move()
 }
 swim()
 // adding a listener for player mousewheel
@@ -218,5 +231,5 @@ document.addEventListener("keypress", function(event) {
 document.addEventListener("click", ()=> {
     // check that the crosshairs are in within the salmon
     if (crosshairs.pos.x + 32 >= salmon.pos.x && crosshairs.pos.x + 32 <= salmon.pos.x + salmonStill.width && crosshairs.pos.y + 32 >= salmon.pos.y && crosshairs.pos.y + 32 < salmon.pos.y + salmonStill.height) {
-        alert('hit!')}
+    alert('hit!')}
   })
