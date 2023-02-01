@@ -21,10 +21,11 @@ class gameObject {
         this.pos = pos
         this.speed = speed
         this.species = species
+        this.image = crabStill
     }
     // drawing the sprite or shapes at the object's position
     draw() {
-        c.drawImage(crabStill, this.pos.x, this.pos.y)
+        c.drawImage(this.image, this.pos.x, this.pos.y)
     }
     // updating object positions as they move and have to be redrawn. separate from draw() because they should still be drawn while stationary
     // making fish wrap back into the screen if they leave
@@ -38,6 +39,9 @@ class gameObject {
             if (this.species == 'salmon') {
                 this.pos.x = -salmonStill.width
             }
+            if (this.species == 'carp') {
+                this.pos.x = -carpStill.width
+            }
         }
         // and for the left side
         if (this.species == 'crab') {
@@ -49,6 +53,11 @@ class gameObject {
             if (this.pos.x < -salmonStill.width) {
                 this.pos.x = canvas.width
             }
+        if (this.species == 'carp') {
+            if (this.pos.x < -carpStill.width) {
+                this.pos.x = canvas.width
+            }
+        }
         }
     }
     move() {
@@ -64,10 +73,7 @@ class commonFish extends gameObject {
     constructor({pos, speed}) {
         // 'salmon' species 
         super({pos, speed}, 'salmon');
-    }
-    draw() {
-        // drawing my salmon sprite instead of the crab one
-        c.drawImage(salmonStill, this.pos.x, this.pos.y)
+        this.image = salmonStill
     }
 }
 // creating a class for smaller fish
@@ -75,10 +81,7 @@ class uglyFish extends gameObject {
     constructor({pos, speed}) {
         // 'carp' species
         super({pos, speed}, 'carp')
-    }
-    draw() {
-        // drawing my carp sprite instead of the salmon one
-        c.drawImage(carpStill, this.pos.x, this.pos.y)
+        this.image = carpStill
     }
 }
 // creating a class for a target zone
@@ -140,7 +143,9 @@ const player = new gameObject({
     }
 }, 'crab')
 // instantiating commonFish to make a salmon object
-const salmon = new commonFish({
+// setting up an array to contain all the fish
+const fishContainer = []
+fishContainer.push(salmon = new commonFish({
     pos: {
         x: 256,
         y: player.pos.y - crabStill.height
@@ -149,22 +154,24 @@ const salmon = new commonFish({
         x: 10,
         y: 0
     }
-})
-const carpContainer = []
-// creating 5 carp
-for (let i = 0; i < 5; i++) {
-    carpContainer.push(new uglyFish({
-        pos: {
-            x: i * 100,
-            y: i * 100
-        },
-        speed: {
-            x: 5,
-            y: 0
-        }
-    }))
-}
+}))
 
+// a function to create x amount of carp
+function carpCall(quantity) {
+    for (let i = 0; i < quantity; i++) {
+        fishContainer.push(new uglyFish({
+            pos: {
+                x: i * 100,
+                y: i * 80
+            },
+            speed: {
+                x: Math.random()*5 + 1,
+                y: 0
+            }
+        }))
+    }
+}
+carpCall(5)
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
@@ -186,8 +193,8 @@ function swim() {
     // draw objects on every frame
     strikeSquare.move()
     salmon.move()
-    for (let i = 0; i < carpContainer.length; i++) {
-        carpContainer[i].move()
+    for (let i = 0; i < fishContainer.length; i++) {
+        fishContainer[i].move()
     }
     crosshairs.move()
     player.move()
@@ -245,9 +252,14 @@ document.addEventListener("keypress", function(event) {
         crosshairs.speed.x = 0
     }
   }) 
-// adding a listener for the player's click
+let h1 = document.getElementsByTagName('h1')
+let counter = 0
+// using the fishContainer array to pass any fish object to the click listener
 document.addEventListener("click", ()=> {
-    // check that the crosshairs are in within the salmon
-    if (crosshairs.pos.x + 32 >= salmon.pos.x && crosshairs.pos.x + 32 <= salmon.pos.x + salmonStill.width && crosshairs.pos.y + 32 >= salmon.pos.y && crosshairs.pos.y + 32 < salmon.pos.y + salmonStill.height) {
-    alert('hit!')}
+    for (let i = 0; i < fishContainer.length; i++) {
+    // check that the crosshairs are in within the fish object
+    if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
+    counter += 1
+    h1[0].innerHTML = `Fish: ${counter}`}
+    }
   })
