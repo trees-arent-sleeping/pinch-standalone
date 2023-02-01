@@ -149,10 +149,10 @@ function carpCall(x) {
             fishContainer.push(new uglyFish({
                 pos: {
                     x: -128,
-                    y: 0
+                    y: -64
                 },
                 speed: {
-                    x: Math.random()*5 + 5,
+                    x: 4,
                     y: 0
                 }
             }))
@@ -160,7 +160,7 @@ function carpCall(x) {
         }, 1000 * i)
     }
 }
-carpCall(50)
+carpCall(10)
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
@@ -181,12 +181,15 @@ function swim() {
     // erasing previous animation frames by painting black over them
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
-    // draw objects on every frame
+    // draw target zone
     strikeSquare.move()
+    // draw all fish
     for (let i = 0; i < fishContainer.length; i++) {
         fishContainer[i].move()
     }
+    // draw crosshairs
     crosshairs.move()
+    // draw the player
     player.move()
     // update the health and remove small fish when they bite the player
     for (let i = 0; i < fishContainer.length; i++)
@@ -204,13 +207,12 @@ function swim() {
         }
         // if the player's health is 0 and they get another bite, spawn a salmon
         // spawn only one salmon
-        if (reaperSpawned < 2) {
+        if (reaperSpawned < 1) {
             if (player.hp < 1) {
-                reaperSpawned += 2
-                alert(reaperSpawned)
+                reaperSpawned += 1
                 fishContainer.push(salmon = new commonFish({
                     pos: {
-                        x: 0,
+                        x: -384,
                         y: 0
                     },
                     speed: {
@@ -242,18 +244,18 @@ document.addEventListener('wheel', (event)=> {
 // adding WASD controls for crosshairs
 document.addEventListener("keypress", function(event) {
             if (event.key === "w") {
-                crosshairs.speed.y = -4
+                crosshairs.speed.y = -5
             }
             if (event.key === "a")
             {
-                crosshairs.speed.x = -4
+                crosshairs.speed.x = -5
             }
             if (event.key === "s") {
-                crosshairs.speed.y = 4
+                crosshairs.speed.y = 5
             }
             if
             (event.key === "d") {
-                crosshairs.speed.x = 4
+                crosshairs.speed.x = 5
             }
 });
 // adding key release WASD listeners

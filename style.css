@@ -1,0 +1,34 @@
+body {
+    background-color: blue;
+}
+
+canvas {
+    height: 500px;
+}
+
+ul {
+background-color: rgb(195, 55, 55);
+list-style: none;
+padding: 0px;
+width: 888px;
+}
+
+h1 {
+    padding-top: 24px;
+    text-shadow: 3px 3px blue;
+}
+
+h1 , h3 {
+    padding-left: 24px
+}
+
+h3 {
+    padding-bottom: 24px;
+    text-shadow: 2px 2px blue;
+}
+
+canvas, ul {
+    border-width: 5px;
+    border-style:ridge;
+    border-color: black;
+}
