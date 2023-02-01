@@ -33,33 +33,13 @@ class gameObject {
         // if objects exit on the right side
         if (this.pos.x > canvas.width) {
             // load the sprite in left minus its pixel width for a smooth transition
-            if (this.species == 'crab') {
-                this.pos.x = -crabStill.width
-            }
-            if (this.species == 'salmon') {
-                this.pos.x = -salmonStill.width
-            }
-            if (this.species == 'carp') {
-                this.pos.x = -carpStill.width
-            }
+                this.pos.x = -this.image.width
         }
         // and for the left side
-        if (this.species == 'crab') {
-            if (this.pos.x < -crabStill.width) {
+         if (this.pos.x < -this.image.width) {
                 this.pos.x = canvas.width
             }
         }
-        if (this.species == 'salmon') {
-            if (this.pos.x < -salmonStill.width) {
-                this.pos.x = canvas.width
-            }
-        if (this.species == 'carp') {
-            if (this.pos.x < -carpStill.width) {
-                this.pos.x = canvas.width
-            }
-        }
-        }
-    }
     move() {
         this.draw()
         this.wrap()
@@ -155,7 +135,6 @@ fishContainer.push(salmon = new commonFish({
         y: 0
     }
 }))
-
 // a function to create x amount of carp
 function carpCall(quantity) {
     for (let i = 0; i < quantity; i++) {
