@@ -16,11 +16,10 @@ carpStill.src = 'fishpics/uglyfish.png'
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
 class gameObject {
-    // position and speed are given as an object for legibility during instantiation. the species argument is used to determine which image is drawn
-    constructor({pos, speed}, species) {
+    // position and speed are given as an object for legibility during instantiation.
+    constructor({pos, speed}) {
         this.pos = pos
         this.speed = speed
-        this.species = species
         this.image = crabStill
     }
     // drawing the sprite or shapes at the object's position
@@ -51,16 +50,14 @@ class gameObject {
 // creating a class for salmon
 class commonFish extends gameObject {
     constructor({pos, speed}) {
-        // 'salmon' species 
-        super({pos, speed}, 'salmon');
+        super({pos, speed});
         this.image = salmonStill
     }
 }
 // creating a class for smaller fish
 class uglyFish extends gameObject {
     constructor({pos, speed}) {
-        // 'carp' species
-        super({pos, speed}, 'carp')
+        super({pos, speed})
         this.image = carpStill
     }
 }
