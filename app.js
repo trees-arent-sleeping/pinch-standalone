@@ -177,18 +177,18 @@ const player = new gameObject({
 })
 // setting up an array to contain all the fish
 const fishContainer = []
-// a function to create x amount of carp
-function carpCall(x) {
-    for (let i = 0; i < x; i++) {
+// a function to create x amount of fish
+function carpCall(quantity, creature, speed, level) {
+    for (let i = 0; i < quantity; i++) {
         // setting a delay between each iteration so that the fish spawn slowly
         setTimeout(()=> {
-            fishContainer.push(new smallFish({
+            fishContainer.push(new creature({
                 pos: {
                     x: -128,
-                    y: -64
+                    y: level
                 },
                 speed: {
-                    x: 4,
+                    x: speed,
                     y: 0
                 }
             }))
@@ -196,7 +196,16 @@ function carpCall(x) {
         }, 1000 * i)
     }
 }
-carpCall(10)
+// summon 10 carp with a speed of 4
+carpCall(10, uglyFish, 4, -64)
+// after 10 seconds, do it every 10 seconds
+setInterval(()=> {
+    carpCall(10, uglyFish, 4, -64)
+}, 10000)
+// after 20 seconds, spawn shrimp every 15 seconds
+setInterval(()=> {
+    carpCall(10, smallFish, 4, -196)
+}, 20000)
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
@@ -239,7 +248,9 @@ function swim() {
         player.hp -= 1
         // salmon aren't deleted when they impact the player
         if (fishContainer[i].image !== salmonStill) {
-            fishContainer.splice(i, 1)
+            // if the salmon is spawned, fish ignore the player
+            if (reaperSpawned != 1) {
+            fishContainer.splice(i, 1)}
         }
         // if the player's health is 0 and they get another bite, spawn a salmon
         // spawn only one salmon
@@ -266,6 +277,19 @@ function swim() {
                         x: 2,
                         y: 0
                     }}))
+        // speed up all the fish if the salmon has been spawned
+        if (reaperSpawned == 1) {
+            // set an interval to apply to fish that will spawn after the event
+            setInterval(()=> {
+                for (let i = 0; i < fishContainer.length; i++) {
+                    // with the exception of the salmon
+                    if (fishContainer[i].image != salmonStill) {
+                        // speed up the fish
+                        fishContainer[i].speed.x = 10
+                    }
+                }
+            }, 100)
+            }
         }
         }
     }}
@@ -342,18 +366,25 @@ document.addEventListener("click", ()=> {
         player.unluckyFish = fishContainer[i]
         // remove that fish from the array with a delay. the delay is important to let the crab grab onto the fish
         setTimeout(()=> {
-            fishContainer.splice(i, 1)
+            // if the player isn't grabbing the salmon
+            if (fishContainer[i].image != salmonStill) {
+                // delete that fish
+                fishContainer.splice(i, 1)
+            }
             player.striking = false
-        }, 300)
+        }, 250)
         // add to the player's score
         counter += 1
         // change the border back to red after 100ms
         setTimeout(()=> {
             document.querySelector('canvas').style.filter  = `hue-rotate(0deg)`
-        }, 300)
+        }, 250)
         // update the score tag
         score.innerHTML = `score: ${counter}`}}
     }
 }})
+
+
+
 
 
