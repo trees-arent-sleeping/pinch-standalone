@@ -12,6 +12,12 @@ let salmonStill = new Image()
 salmonStill.src = 'fishpics/salmonStill.png'
 let carpStill = new Image()
 carpStill.src = 'fishpics/uglyfish.png'
+let lilStill = new Image()
+lilStill.src = 'fishpics/littlefish.png'
+let strikeLeft = new Image()
+strikeLeft.src = 'fishpics/strikeLeft.png'
+let strikeRight = new Image()
+strikeRight.src = 'fishpics/strikeRight.png'
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
@@ -22,10 +28,35 @@ class gameObject {
         this.speed = speed
         this.image = crabStill
         this.hp = 5
+        // track whether the player has hit a fish
+        this.striking = false
+        // track the fish that was hit
+        this.unluckyFish = null
     }
+    // method to delay the player withdrawing their claw
+        letGo() {
+            setTimeout(()=> {
+             this.striking = false}, 500
+         )
+        }
     // drawing the sprite or shapes at the object's position
     draw() {
-        c.drawImage(this.image, this.pos.x, this.pos.y)
+        function grabOn() {
+            
+        }
+        // check that the player isn't striking and draw the normal sprite
+        if (this.striking == false) {
+            c.drawImage(this.image, this.pos.x, this.pos.y)
+        } else if (this.striking == true && this.image == crabStill) {
+        // if the fish was hit on the right side of the target area
+        if (this.unluckyFish.pos.x < strikeSquare.pos.x + 92) {
+            c.drawImage(strikeLeft, this.unluckyFish.pos.x + this.unluckyFish.image.width/2, this.pos.y)
+            this.letGo()
+        } else if (this.unluckyFish.pos.x > strikeSquare.pos.x +92) {
+            c.drawImage(strikeRight, this.unluckyFish.pos.x + this.unluckyFish.image.width/2 - 41, this.pos.y)
+            this.letGo()
+        }
+    }
     }
     // updating object positions as they move and have to be redrawn. separate from draw() because they should still be drawn while stationary
     // making fish wrap back into the screen if they leave
@@ -54,6 +85,8 @@ class commonFish extends gameObject {
         super({pos, speed});
         this.image = salmonStill
         this.biting = false
+        // striking isn't needed for objects that aren't the crab
+        this.striking = false
     }
     // modifying wrap() to make fish move vertically towards the player. t
     wrap() {
@@ -81,6 +114,13 @@ class uglyFish extends commonFish {
         this.image = carpStill
     }
 }
+// creating a class for even smaller fish
+class smallFish extends commonFish {
+    constructor({pos, speed}) {
+        super({pos, speed})
+        this.image = lilStill
+    }
+}
 // creating a class for a target zone
 class strikeArea extends gameObject {
     constructor({pos, speed}) {
@@ -91,7 +131,7 @@ class strikeArea extends gameObject {
             c.fillStyle = 'blue'
             c.fillRect(this.pos.x, this.pos.y, 384, 192)
             c.fillStyle = 'black'
-            c.fillRect(this.pos.x + 2, this.pos.y + 2, 380, 188)
+            c.fillRect(this.pos.x + 3, this.pos.y + 3, 378, 186)
             // loosely centering the target zone above the player
             this.pos.x = player.pos.x - player.pos.x/3
     }
@@ -103,11 +143,11 @@ class pointer extends gameObject {
     }
     draw() {
         // drawing the crosshairs with fillStyle
+        c.fillStyle = 'blue'
+        c.fillRect(this.pos.x + 31, this.pos.y + 16, 3, 32)
+        c.fillRect(this.pos.x + 16, this.pos.y + 31, 32, 3)
         c.fillStyle = 'red'
-        c.fillRect(this.pos.x + 31, this.pos.y + 16, 2, 32)
-        c.fillRect(this.pos.x + 16, this.pos.y + 31, 32, 2)
-        c.fillStyle = 'red'
-        c.fillRect(this.pos.x + 29, this.pos.y + 29, 6, 6)
+        c.fillRect(this.pos.x + 30, this.pos.y + 30, 6, 6)
         // if the center of the crosshairs touch the left of the target zone
         if (crosshairs.pos.x + 32 < strikeSquare.pos.x) {
             // let the crosshairs be dragged on the target zone
@@ -146,7 +186,7 @@ function carpCall(x) {
     for (let i = 0; i < x; i++) {
         // setting a delay between each iteration so that the fish spawn slowly
         setTimeout(()=> {
-            fishContainer.push(new uglyFish({
+            fishContainer.push(new smallFish({
                 pos: {
                     x: -128,
                     y: -64
@@ -212,11 +252,11 @@ function swim() {
                 reaperSpawned += 1
                 // make things look scary
                 setInterval(()=> {
-                    document.querySelector('canvas').style.filter = 'invert(70%)'
+                    document.querySelector('canvas').style.filter = 'invert(0)'
                 }, 100)
                 // make the game window blink inverted colors
                 setInterval(()=> {
-                    document.querySelector('canvas').style.filter = 'invert(0)'
+                    document.querySelector('canvas').style.filter = 'invert(70%)'
                 }, 1000)
                 document.querySelector('ul').style.filter = 'brightness(0)'
 
@@ -296,17 +336,25 @@ document.addEventListener("click", ()=> {
     for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
-        // remove that fish from the array
-        fishContainer.splice(i, 1)
         // flash the game area a random color
         document.querySelector('canvas').style.filter  = `hue-rotate(${Math.random()*360}rad)`
+        // make claws change
+        player.striking = true
+        // track the fish that the player hit. this is important to move the crab into position
+        player.unluckyFish = fishContainer[i]
+        // remove that fish from the array with a delay. the delay is important to let the crab grab onto the fish
+        setTimeout(()=> {
+            fishContainer.splice(i, 1)
+        }, 300)
         // add to the player's score
         counter += 1
         // change the border back to red after 100ms
         setTimeout(()=> {
             document.querySelector('canvas').style.filter  = `hue-rotate(0deg)`
-        }, 150)
+        }, 300)
         // update the score tag
         score.innerHTML = `score: ${counter}`}
     }
 })
+
+
