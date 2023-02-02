@@ -48,14 +48,21 @@ class gameObject {
         if (this.striking == false) {
             c.drawImage(this.image, this.pos.x, this.pos.y)
         } else if (this.striking == true && this.image == crabStill) {
-        // if the fish was hit on the right side of the target area
-        if (this.unluckyFish.pos.x < strikeSquare.pos.x + 92) {
-            c.drawImage(strikeLeft, this.unluckyFish.pos.x + this.unluckyFish.image.width/2, this.pos.y)
+        // if the fish is mostly within the target area. the crab needs to only jump within the box
+        if (this.unluckyFish.pos.x + this.unluckyFish.image.width/2 >= strikeSquare.pos.x && this.unluckyFish.pos.x + this.unluckyFish.image.width/2 <= strikeSquare.pos.x + 384 && this.unluckyFish.pos.y + this.unluckyFish.image.height/2 >= strikeSquare.pos.y && this.unluckyFish.pos.y + this.unluckyFish.image.height/2 < this.unluckyFish.pos.y + 192)
+        {
+             // if the fish was hit on the left side of the target area
+            if (this.unluckyFish.pos.x < strikeSquare.pos.x + 92) {
+            c.drawImage(strikeLeft, this.unluckyFish.pos.x + this.unluckyFish.image.width/2 + 5, this.unluckyFish.pos.y + this.unluckyFish.image.height/2)
             this.letGo()
+            // only draw one of two sprites. no crab rave
+            return
+            // if the fish was hit on the right side
         } else if (this.unluckyFish.pos.x > strikeSquare.pos.x +92) {
-            c.drawImage(strikeRight, this.unluckyFish.pos.x + this.unluckyFish.image.width/2 - 41, this.pos.y)
+            c.drawImage(strikeRight, this.unluckyFish.pos.x - 78, this.unluckyFish.pos.y + this.unluckyFish.image.height/2)
             this.letGo()
-        }
+            return
+        }}
     }
     }
     // updating object positions as they move and have to be redrawn. separate from draw() because they should still be drawn while stationary
@@ -334,8 +341,10 @@ let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
 document.addEventListener("click", ()=> {
     for (let i = 0; i < fishContainer.length; i++) {
-    // check that the crosshairs are in within the fish object
+    // check that the crosshairs are in within the fish object 
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
+        // check again that the fish is mostly within the box
+        if (fishContainer[i].pos.x + fishContainer[i].image.width/2 >= strikeSquare.pos.x && fishContainer[i].pos.x + fishContainer[i].image.width/2 <= strikeSquare.pos.x + 384 && fishContainer[i].pos.y + fishContainer[i].image.height/2 >= strikeSquare.pos.y && fishContainer[i].pos.y + fishContainer[i].image.height/2 < fishContainer[i].pos.y + 192) {
         // flash the game area a random color
         document.querySelector('canvas').style.filter  = `hue-rotate(${Math.random()*360}rad)`
         // make claws change
@@ -353,7 +362,7 @@ document.addEventListener("click", ()=> {
             document.querySelector('canvas').style.filter  = `hue-rotate(0deg)`
         }, 300)
         // update the score tag
-        score.innerHTML = `score: ${counter}`}
+        score.innerHTML = `score: ${counter}`}}
     }
 })
 
