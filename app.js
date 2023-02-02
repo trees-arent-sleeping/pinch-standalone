@@ -33,12 +33,6 @@ class gameObject {
         // track the fish that was hit
         this.unluckyFish = null
     }
-    // method to delay the player withdrawing their claw
-        letGo() {
-            setTimeout(()=> {
-             this.striking = false}, 500
-         )
-        }
     // drawing the sprite or shapes at the object's position
     draw() {
         function grabOn() {
@@ -53,15 +47,10 @@ class gameObject {
         {
              // if the fish was hit on the left side of the target area
             if (this.unluckyFish.pos.x < strikeSquare.pos.x + 92) {
-            c.drawImage(strikeLeft, this.unluckyFish.pos.x + this.unluckyFish.image.width/2 + 5, this.unluckyFish.pos.y + this.unluckyFish.image.height/2)
-            this.letGo()
-            // only draw one of two sprites. no crab rave
-            return
+            c.drawImage(strikeLeft, this.unluckyFish.pos.x + this.unluckyFish.image.width/2 - 10, this.unluckyFish.pos.y + this.unluckyFish.image.height/2)
             // if the fish was hit on the right side
-        } else if (this.unluckyFish.pos.x > strikeSquare.pos.x +92) {
+        } else if (this.unluckyFish.pos.x > strikeSquare.pos.x +88) {
             c.drawImage(strikeRight, this.unluckyFish.pos.x - 78, this.unluckyFish.pos.y + this.unluckyFish.image.height/2)
-            this.letGo()
-            return
         }}
     }
     }
@@ -340,7 +329,7 @@ let score = document.getElementById('score')
 let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
 document.addEventListener("click", ()=> {
-    for (let i = 0; i < fishContainer.length; i++) {
+    if (player.striking == false) {for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object 
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
         // check again that the fish is mostly within the box
@@ -354,6 +343,7 @@ document.addEventListener("click", ()=> {
         // remove that fish from the array with a delay. the delay is important to let the crab grab onto the fish
         setTimeout(()=> {
             fishContainer.splice(i, 1)
+            player.striking = false
         }, 300)
         // add to the player's score
         counter += 1
@@ -364,6 +354,6 @@ document.addEventListener("click", ()=> {
         // update the score tag
         score.innerHTML = `score: ${counter}`}}
     }
-})
+}})
 
 
