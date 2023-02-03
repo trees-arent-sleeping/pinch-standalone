@@ -18,6 +18,8 @@ let strikeLeft = new Image()
 strikeLeft.src = 'fishpics/strikeLeft.png'
 let strikeRight = new Image()
 strikeRight.src = 'fishpics/strikeRight.png'
+let gameOver = new Image()
+gameOver.src = 'fishpics/gameover.png'
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
@@ -32,6 +34,7 @@ class gameObject {
         this.striking = false
         // track the fish that was hit
         this.unluckyFish = null
+        this.bittenByReaper = false
     }
     // drawing the sprite or shapes at the object's position
     draw() {
@@ -98,11 +101,27 @@ class commonFish extends gameObject {
         if (this.pos.y + this.image.height/2 > player.
         pos.y + 10 && this.pos.x + this.image.width > player.pos.x){
         // check the fish is a salmon. only salmon can push the player
-        if (this.image == salmonStill) {player.pos.x = this.pos.x + 1}
+        if (this.image == salmonStill) {
+            if (this.pos.x >= canvas.width) {
+                // stop drawing the player and UI
+                player.bittenByReaper = true
+                // stop the window flashing
+                clearInterval(window.flashCanvasOff)
+                clearInterval(window.flashCanvasOn)
+                // make the score visible again
+                document.querySelector('ul').style.filter = 'brightness(100)'
+                document.querySelector('canvas').style.filter = 'brightness(0)'
+                // change the font size of the score
+                score.style.fontSize = '35px'
+            } else {
+                player.pos.x = this.pos.x + 1
+                // push player crosshairs and target area offscreen when they are bitten by the salmon
+                strikeSquare.pos.x = canvas.width
+                crosshairs.pos.x = canvas.width
+            }
+        } 
         this.biting = true
-    }
-        }
-}
+    }}}
 // creating a class for smaller fish
 class uglyFish extends commonFish {
     constructor({pos, speed}) {
@@ -226,16 +245,24 @@ function swim() {
     // erasing previous animation frames by painting black over them
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
-    // draw target zone
+    // draw target zone if the player hasn't been dragged offscreen
+    if (player.bittenByReaper == false) {
     strikeSquare.move()
+    }
     // draw all fish
     for (let i = 0; i < fishContainer.length; i++) {
         fishContainer[i].move()
     }
-    // draw crosshairs
+    // draw crosshairs if the player hasn't been dragged offscreen
+    if (player.bittenByReaper == false) {
     crosshairs.move()
     // draw the player
     player.move()
+    }
+    // draw the game over screen if the player has been dragged offscreen. strikesquare's position is forced to be offscreen when the player is bitten
+    if (strikeSquare.pos.x == canvas.width) {
+    c.drawImage(gameOver, 0, 0)
+    }
     // update the health and remove small fish when they bite the player
     for (let i = 0; i < fishContainer.length; i++)
     {if (fishContainer[i].biting == true) {
@@ -252,22 +279,30 @@ function swim() {
             if (reaperSpawned != 1) {
             fishContainer.splice(i, 1)}
         }
+        // delete the fish if it exits the game area
+        if (fishContainer[i].pos.x > canvas.width && fishContainer[i].pos.y > canvas.height) {
+            if (fishContainer[i].image == salmonStill)
+            fishContainer.splice(i, 1)
+        }
         // if the player's health is 0 and they get another bite, spawn a salmon
         // spawn only one salmon
         if (reaperSpawned < 1) {
             if (player.hp < 1) {
                 reaperSpawned += 1
+                // check that the player hasn't already been dragged off the scren
+                if (player.bittenByReaper == false) {
                 // make things look scary
-                setInterval(()=> {
+                window.flashCanvasOff = setInterval(()=> {
                     document.querySelector('canvas').style.filter = 'invert(0)'
                 }, 100)
                 // make the game window blink inverted colors
-                setInterval(()=> {
+                window.flashCanvasOn = setInterval(()=> 
+                {
                     document.querySelector('canvas').style.filter = 'invert(70%)'
                 }, 1000)
+         
                 document.querySelector('ul').style.filter = 'brightness(0)'
-
-
+                }
                 fishContainer.push(salmon = new commonFish({
                     pos: {
                         x: -384,
@@ -315,18 +350,18 @@ document.addEventListener('wheel', (event)=> {
 // adding WASD controls for crosshairs
 document.addEventListener("keypress", function(event) {
             if (event.key === "w") {
-                crosshairs.speed.y = -5
+                crosshairs.speed.y = -6
             }
             if (event.key === "a")
             {
-                crosshairs.speed.x = -5
+                crosshairs.speed.x = -6
             }
             if (event.key === "s") {
-                crosshairs.speed.y = 5
+                crosshairs.speed.y = 6
             }
             if
             (event.key === "d") {
-                crosshairs.speed.x = 5
+                crosshairs.speed.x = 6
             }
 });
 // adding key release WASD listeners
@@ -353,7 +388,7 @@ let score = document.getElementById('score')
 let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
 document.addEventListener("click", ()=> {
-    if (player.striking == false) {for (let i = 0; i < fishContainer.length; i++) {
+    if (player.striking == false && player.bittenByReaper == false) {for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object 
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
         // check again that the fish is mostly within the box
