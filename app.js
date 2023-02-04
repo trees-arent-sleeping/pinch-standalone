@@ -122,7 +122,7 @@ class commonFish extends gameObject {
                 newGame.innerHTML = 'new game'
                 // reloads the window when clicked
                 newGame.onclick = (()=> {
-                    appended = 0
+                    this.appended = 0
                     location.reload()
                 })
                 // adjust the padding
