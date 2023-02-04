@@ -122,7 +122,6 @@ class commonFish extends gameObject {
                 newGame.innerHTML = 'new game'
                 // reloads the window when clicked
                 newGame.onclick = (()=> {
-                    this.appended = 0
                     location.reload()
                 })
                 // adjust the padding
@@ -371,8 +370,6 @@ swim()
 document.addEventListener('wheel', (event)=> {
     // tracking the change in Y of the scroll event. scrolling down gives negative changes in px and up gives positive. 
     let scroll = event.deltaY
-    console.log(scroll)
-
     // if player is rolling the mousewheel up:
     if (scroll > 0) {
         // scrolling more means more pixels moved. it's negative in one direction, so I'm taking the absolute value of pixels scrolled (ie -40px or +90px) to make the player's speed somewhat proportionate to the mousewheel movement. multiplying by 0.05 gives just a little movement
