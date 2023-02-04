@@ -87,7 +87,8 @@ class commonFish extends gameObject {
         // striking isn't needed for objects that aren't the crab
         this.striking = false
     }
-    // modifying wrap() to make fish move vertically towards the player. t
+    // modifying wrap() to make fish move vertically towards the player.
+    appended = 0
     wrap() {
         if (this.pos.x > canvas.width) {
             this.pos.x = -this.image.width
@@ -113,6 +114,34 @@ class commonFish extends gameObject {
                 document.querySelector('canvas').style.filter = 'brightness(0)'
                 // change the font size of the score
                 score.style.fontSize = '35px'
+                // display a new game button
+                if (this.appended == 0) 
+                {
+                this.appended = 1
+                const newGame = document.createElement('h1')
+                newGame.innerHTML = 'new game'
+                // reloads the window when clicked
+                newGame.onclick = (()=> {
+                    appended = 0
+                    location.reload()
+                })
+                // adjust the padding
+                newGame.style.paddingTop = '0px'
+                // change the color to pink (it's inverted)
+                newGame.style.color = 'blue'
+                // change the color when the player hovers over it
+                newGame.addEventListener('mouseover', ()=> {
+                    newGame.style.color = 'black'
+                })
+                // change the color when the player releases the mouse
+                newGame.addEventListener('mouseout', ()=> {
+                    newGame.style.color = 'blue'
+                })
+                score.style.paddingBottom = '0px'
+                score.style.paddingTop = '0px'
+                // append it to the <ul> that holds the score and health
+                document.querySelector('ul').appendChild(newGame)
+                }
             } else {
                 player.pos.x = this.pos.x + 1
                 // push player crosshairs and target area offscreen when they are bitten by the salmon
@@ -240,7 +269,7 @@ const crosshairs = new pointer({
 reaperSpawned = 0
 // making a function to redraw each frame
 function swim() {
-    // this calls "swim" on the next frame of animation so it's an infinite loop
+    // this calls 'swim' on the next frame of animation so it's an infinite loop
     window.requestAnimationFrame(swim) 
     // erasing previous animation frames by painting black over them
     c.fillStyle = 'black'
@@ -258,6 +287,14 @@ function swim() {
     crosshairs.move()
     // draw the player
     player.move()
+    }
+    // add brakes to the player's speed
+    if (player.speed.x !== 0) {
+        if(player.speed.x > 0) {
+            player.speed.x -= Math.abs(player.speed.x) * 0.03
+        } else if (player.speed.x < 0) {
+            player.speed.x += Math.abs(player.speed.x) * 0.03
+        }
     }
     // draw the game over screen if the player has been dragged offscreen. strikesquare's position is forced to be offscreen when the player is bitten
     if (strikeSquare.pos.x == canvas.width) {
@@ -348,37 +385,37 @@ document.addEventListener('wheel', (event)=> {
     }
 });
 // adding WASD controls for crosshairs
-document.addEventListener("keypress", function(event) {
-            if (event.key === "w") {
+document.addEventListener('keypress', function(event) {
+            if (event.key === 'w') {
                 crosshairs.speed.y = -6
             }
-            if (event.key === "a")
+            if (event.key === 'a')
             {
                 crosshairs.speed.x = -6
             }
-            if (event.key === "s") {
+            if (event.key === 's') {
                 crosshairs.speed.y = 6
             }
             if
-            (event.key === "d") {
+            (event.key === 'd') {
                 crosshairs.speed.x = 6
             }
 });
 // adding key release WASD listeners
-  document.addEventListener("keyup",function(event) {
-    if (event.key === "w") {
+  document.addEventListener('keyup',function(event) {
+    if (event.key === 'w') {
         crosshairs.speed.y = 0;
     }
-    if (event.key === "a")
+    if (event.key === 'a')
     {
         crosshairs.speed.x = 0
     } 
     if
-    (event.key === "s") {
+    (event.key === 's') {
         crosshairs.speed.y = 0
     }
     if
-    (event.key === "d") {
+    (event.key === 'd') {
         crosshairs.speed.x = 0
     }
 }) 
@@ -387,7 +424,7 @@ let score = document.getElementById('score')
 // starting with a score of 0
 let counter = 0
 // using the fishContainer array to pass any fish object to the click listener
-document.addEventListener("click", ()=> {
+document.addEventListener('click', ()=> {
     if (player.striking == false && player.bittenByReaper == false) {for (let i = 0; i < fishContainer.length; i++) {
     // check that the crosshairs are in within the fish object 
     if (crosshairs.pos.x + 32 >= fishContainer[i].pos.x && crosshairs.pos.x + 32 <= fishContainer[i].pos.x + fishContainer[i].image.width && crosshairs.pos.y + 32 >= fishContainer[i].pos.y && crosshairs.pos.y + 32 < fishContainer[i].pos.y + fishContainer[i].image.height) {
