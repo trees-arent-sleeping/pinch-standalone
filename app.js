@@ -14,12 +14,24 @@ let carpStill = new Image()
 carpStill.src = 'fishpics/uglyfish.png'
 let lilStill = new Image()
 lilStill.src = 'fishpics/littlefish.png'
+let longFish = new Image()
+longFish.src = 'fishpics/longFish.png'
 let strikeLeft = new Image()
 strikeLeft.src = 'fishpics/strikeLeft.png'
 let strikeRight = new Image()
 strikeRight.src = 'fishpics/strikeRight.png'
 let gameOver = new Image()
 gameOver.src = 'fishpics/gameover.png'
+// grabbing the title screen image from the DOM
+const aGameBySam = document.querySelector('img')
+// animate the color of the title screen
+setInterval(()=> {
+    aGameBySam.style.filter  = `hue-rotate(${Math.random()*360}rad)`
+}, 250)
+// removing the starting screen after a delay
+setTimeout(()=> {
+    aGameBySam.height = '0px'
+}, 3000)
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
 c.fillRect(0, 0, canvas.width, canvas.height)
 // creating a class for everything I'm animating
@@ -90,6 +102,11 @@ class commonFish extends gameObject {
     // modifying wrap() to make fish move vertically towards the player.
     appended = 0
     wrap() {
+        if (this.image == longFish && this.pos.x > canvas.width) {
+            this.pos.x = -this.image.width
+            // moving the fish down towards the player by their image height when they are offscreen
+            this.pos.y += this.image.height / 2 + this.image.height / 4
+        } else
         if (this.pos.x > canvas.width) {
             this.pos.x = -this.image.width
             // moving the fish down towards the player by their image height when they are offscreen
@@ -155,6 +172,21 @@ class uglyFish extends commonFish {
     constructor({pos, speed}) {
         super({pos, speed})
         this.image = carpStill
+        this.health = 1
+    }
+}
+// creating a class for very long fish
+class longerFish extends commonFish {
+    constructor({pos, speed}) {
+        super({pos, speed})
+        this.image = longFish
+        this.health = 12
+    }
+    drawHealth() {
+        if (this.pos.x + this.image.width/2 >= strikeSquare.pos.x && this.pos.x + this.image.width/2 <= strikeSquare.pos.x + 384 && this.pos.y + this.image.height/2 >= strikeSquare.pos.y && this.pos.y + this.image.height/2 < this.pos.y + 192) {
+            c.fillStyle = `rgba(${291 - this.health * 3}, 255, 255, 0.6)`
+            c.fillRect(this.pos.x + this.image.width/2 - 128 * this.health / 5 / 2, this.pos.y + this.image.height + 8, 128 * this.health / 5, 16)
+        }
     }
 }
 // creating a class for even smaller fish
@@ -162,6 +194,7 @@ class smallFish extends commonFish {
     constructor({pos, speed}) {
         super({pos, speed})
         this.image = lilStill
+        this.health = 1
     }
 }
 // creating a class for a target zone
@@ -243,16 +276,18 @@ function carpCall(quantity, creature, speed, level) {
         }, 1000 * i)
     }
 }
-// summon 10 carp with a speed of 4
+// summon creatures
 carpCall(10, uglyFish, 4, -64)
-// after 10 seconds, do it every 10 seconds
 setInterval(()=> {
-    carpCall(10, uglyFish, 4, -64)
+    carpCall(10, smallFish, 4, -64)
 }, 10000)
-// after 20 seconds, spawn shrimp every 15 seconds
 setInterval(()=> {
-    carpCall(10, smallFish, 4, -196)
+    carpCall(10, uglyFish, 4, -196)
 }, 20000)
+setInterval(()=> {
+    carpCall(1, longerFish, 1, -256)
+}, 60000)
+
 // instantiating strikeArea to make a target area object
 const strikeSquare = new strikeArea({
     // x-position and speed don't matter because this object is attached to the player
@@ -277,9 +312,18 @@ function swim() {
     if (player.bittenByReaper == false) {
     strikeSquare.move()
     }
+     // draw longer fish first, draw longer fish health bar
+     for (let i = 0; i < fishContainer.length; i++) {
+        if (fishContainer[i].image == longFish) {
+            fishContainer[i].drawHealth()
+            fishContainer[i].move()
+        }
+    }
     // draw all fish
     for (let i = 0; i < fishContainer.length; i++) {
-        fishContainer[i].move()
+        if (fishContainer[i].image != longerFish) {
+            fishContainer[i].move()
+        }
     }
     // draw crosshairs if the player hasn't been dragged offscreen
     if (player.bittenByReaper == false) {
@@ -437,6 +481,9 @@ document.addEventListener('click', ()=> {
         setTimeout(()=> {
             // if the player isn't grabbing the salmon
             if (fishContainer[i].image != salmonStill) {
+                if (fishContainer[i].health > 1) {
+                    fishContainer[i].health -= 1
+                } else
                 // delete that fish
                 fishContainer.splice(i, 1)
             }

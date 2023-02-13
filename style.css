@@ -27,8 +27,14 @@ h3 {
     text-shadow: 2px 2px blue;
 }
 
-canvas, ul {
+canvas, ul, img {
     border-width: 5px;
     border-style:ridge;
+    border-color: black;
+}
+
+img {
+    z-index: 1;
+    position: absolute;
     border-color: black;
 }
