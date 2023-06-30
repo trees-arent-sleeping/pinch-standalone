@@ -7,21 +7,21 @@ canvas.width = 1024;
 canvas.height = 576;
 // loading crab and fish
 let crabStill = new Image();
-crabStill.src = "fishpics/crabStill.png";
+crabStill.src = "views/fishpics/crabStill.png";
 let salmonStill = new Image();
-salmonStill.src = "fishpics/salmonStill.png";
+salmonStill.src = "views/fishpics/salmonStill.png";
 let carpStill = new Image();
-carpStill.src = "fishpics/uglyfish.png";
+carpStill.src = "views/fishpics/uglyfish.png";
 let lilStill = new Image();
-lilStill.src = "fishpics/littlefish.png";
+lilStill.src = "views/fishpics/littlefish.png";
 let longFish = new Image();
-longFish.src = "fishpics/longFish.png";
+longFish.src = "views/fishpics/longFish.png";
 let strikeLeft = new Image();
-strikeLeft.src = "fishpics/strikeLeft.png";
+strikeLeft.src = "views/fishpics/strikeLeft.png";
 let strikeRight = new Image();
-strikeRight.src = "fishpics/strikeRight.png";
+strikeRight.src = "views/fishpics/strikeRight.png";
 let gameOver = new Image();
-gameOver.src = "fishpics/gameover.png";
+gameOver.src = "views/fishpics/gameover.png";
 // grabbing the title screen image from the DOM
 const aGameBySam = document.querySelector("img");
 // animate the color of the title screen
@@ -44,7 +44,7 @@ const {
   smallFish,
   strikeArea,
   pointer,
-} = require("./gameClasses");
+} = require("./models/gameClasses");
 // instantiating gameObject to make the player object
 const player = new gameObject({
   pos: {
@@ -226,7 +226,7 @@ swim();
 let score = document.getElementById("score");
 // starting with a score of 0
 let counter = 0;
-const gameController = require("./gameController");
+const gameController = require("./controller/gameController");
 gameController(
   canvas,
   crosshairs,
