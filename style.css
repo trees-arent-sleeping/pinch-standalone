@@ -8,14 +8,14 @@ canvas {
 }
 
 ul {
-background-color: rgb(195, 55, 55);
+    background-color: rgb(117, 33, 33);
 list-style: none;
 padding: 0px;
 width: 888px;
 }
 
 h1 {
-    text-shadow: 3px 3px blue;
+    text-shadow: 3px 3px rgb(2, 2, 182);
 }
 
 h1 , h3 {
@@ -24,7 +24,7 @@ h1 , h3 {
 
 h3 {
     padding-bottom: 24px;
-    text-shadow: 2px 2px blue;
+    text-shadow: 2px 2px rgb(2, 2, 182);
 }
 
 canvas, ul, img {
