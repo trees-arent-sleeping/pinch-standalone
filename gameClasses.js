@@ -14,7 +14,6 @@ class gameObject {
   }
   // drawing the sprite or shapes at the object's position
   draw() {
-    function grabOn() {}
     // check that the player isn't striking and draw the normal sprite
     if (this.striking == false) {
       c.drawImage(this.image, this.pos.x, this.pos.y);
