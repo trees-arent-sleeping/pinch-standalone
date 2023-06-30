@@ -1,4 +1,4 @@
-function gameController(
+function playerControls(
   canvas,
   crosshairs,
   player,
@@ -124,4 +124,4 @@ function gameController(
   document.addEventListener("click", handleClick);
 }
 
-module.exports = gameController;
+module.exports = playerControls;

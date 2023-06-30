@@ -226,8 +226,8 @@ swim();
 let score = document.getElementById("score");
 // starting with a score of 0
 let counter = 0;
-const gameController = require("./controller/gameController");
-gameController(
+const playerControls = require("./controller/playerControls");
+playerControls(
   canvas,
   crosshairs,
   player,
