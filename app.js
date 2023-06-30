@@ -30,6 +30,7 @@ setInterval(() => {
 }, 250);
 // removing the starting screen after a delay
 setTimeout(() => {
+  aGameBySam.style.borderStyle = "none";
   aGameBySam.height = "0px";
 }, 3000);
 // setting up the game area. starts at 0, 0 and is 1024px x 576px
